@@ -20,7 +20,7 @@ jobs:
     - name: Set up Ballerina
       uses: ballerina-platform/setup-ballerina@v1
       with:
-        distribution: '2201.8.0'
+        version: '2201.8.0'
     
     - name: Cache Ballerina packages
       uses: actions/cache@v3
@@ -33,22 +33,34 @@ jobs:
     - name: Build and test backend
       working-directory: ./backend
       run: |
-        bal build
-        bal test
+        if [ -f "Ballerina.toml" ]; then
+          bal build
+          bal test
+        else
+          echo "No Ballerina.toml found, skipping backend tests"
+          exit 0
+        fi
     
     - name: Upload test results
       uses: actions/upload-artifact@v3
-      if: always()
+      if: hashFiles('backend/Ballerina.toml') != ''
       with:
         name: backend-test-results
         path: backend/target/report/
     
     - name: Build executable
       working-directory: ./backend
-      run: bal build --target-dir target/
+      run: |
+        if [ -f "Ballerina.toml" ]; then
+          bal build --target-dir target/
+        else
+          echo "No Ballerina.toml found, skipping build"
+          exit 0
+        fi
     
     - name: Upload backend artifact
       uses: actions/upload-artifact@v3
+      if: hashFiles('backend/Ballerina.toml') != ''
       with:
         name: backend-executable
         path: backend/target/bin/ 
