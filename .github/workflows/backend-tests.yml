@@ -1,0 +1,54 @@
+name: Backend Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Ballerina
+      uses: ballerina-platform/setup-ballerina@v1
+      with:
+        distribution: '2201.8.0'
+    
+    - name: Cache Ballerina packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.ballerina
+        key: ${{ runner.os }}-ballerina-${{ hashFiles('**/Ballerina.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-ballerina-
+    
+    - name: Build and test backend
+      working-directory: ./backend
+      run: |
+        bal build
+        bal test
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: backend-test-results
+        path: backend/target/report/
+    
+    - name: Build executable
+      working-directory: ./backend
+      run: bal build --target-dir target/
+    
+    - name: Upload backend artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: backend-executable
+        path: backend/target/bin/ 

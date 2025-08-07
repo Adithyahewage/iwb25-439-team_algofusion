@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: trackme-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: trackme
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - trackme-network
+
+  # Ballerina Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: trackme-backend
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    environment:
+      MONGODB_URI: mongodb://admin:password@mongodb:27017/trackme?authSource=admin
+      LOG_LEVEL: INFO
+    depends_on:
+      - mongodb
+    networks:
+      - trackme-network
+    volumes:
+      - ./backend/logs:/app/logs
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: trackme-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:9090
+      NEXT_PUBLIC_MAPBOX_TOKEN: ${MAPBOX_TOKEN:-your_mapbox_token_here}
+    depends_on:
+      - backend
+    networks:
+      - trackme-network
+
+  # MongoDB Express (Optional - for database management)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: trackme-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: password
+    depends_on:
+      - mongodb
+    networks:
+      - trackme-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+  networks:
+    trackme-network:
+    driver: bridge 
