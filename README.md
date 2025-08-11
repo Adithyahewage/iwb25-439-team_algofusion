@@ -1,261 +1,272 @@
-# 📦 TrackMe - Cloud-Native Parcel Tracking System
+# 📦 TrackMe - Courier Service Parcel Tracking System
 
-A modern, location-aware parcel tracking system built with **Ballerina** backend and **Next.js** frontend, featuring real-time location tracking, interactive maps, and intelligent notifications.
+[![Ballerina](https://img.shields.io/badge/Ballerina-2201.8.0+-D73A49?style=flat-square&logo=ballerina)](https://ballerina.io/)
+[![Next.js](https://img.shields.io/badge/Next.js-14+-000000?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.0+-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
+[![Docker](https://img.shields.io/badge/Docker-20.10+-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
 
-## 🚀 Features
+> **TrackMe** is a modern, cloud-native parcel tracking system designed specifically for courier services. It enables multiple courier companies to register, manage their parcels, update delivery status, and share tracking information with customers through WhatsApp links.
 
-- **📍 Real-time Location Tracking** - GPS-based parcel monitoring
-- **🗺️ Interactive Maps** - Visual journey tracking with route optimization
-- **📱 Responsive Design** - Mobile-first web interface
-- **🔔 Smart Notifications** - Email alerts with location-based updates
-- **📊 Admin Dashboard** - Comprehensive parcel management
-- **🌐 RESTful APIs** - Clean, documented API endpoints
-- **🐳 Docker Ready** - Easy deployment with containerization
+## 🎯 **What is TrackMe?**
 
-## 🏗️ Architecture
+TrackMe is a **courier service-focused** parcel tracking platform that provides:
+
+- **🚚 Courier Service Registration:** Multiple courier services can create accounts and manage their operations
+- **📦 Parcel Management:** Create, edit, and track parcel status updates efficiently
+- **📱 WhatsApp Integration:** Generate tracking links that can be shared via WhatsApp
+- **🌐 Customer Tracking Portal:** Simple interface for customers to track parcels without registration
+- **⚙️ Admin Dashboard:** Comprehensive management interface for courier services
+- **🔄 Real-time Updates:** Instant status updates and notifications
+
+## 🚀 **Key Features**
+
+### **For Courier Services (Admin)**
+- **Multi-tenant Architecture:** Each courier service has isolated data and operations
+- **Parcel CRUD Operations:** Create, read, update, and delete parcels
+- **Status Management:** Easy interface to update delivery status
+- **Bulk Operations:** Import multiple parcels from CSV/Excel files
+- **User Management:** Multiple staff accounts with different permission levels
+- **Analytics Dashboard:** Delivery performance metrics and insights
+
+### **For Customers (Public)**
+- **No Registration Required:** Track parcels using just the tracking number
+- **Mobile Responsive:** Optimized for all device sizes
+- **Status Timeline:** Visual representation of delivery progress
+- **WhatsApp Sharing:** Easy sharing of tracking information
+- **Real-time Updates:** Live status changes and notifications
+
+## 🏗️ **Technical Architecture**
+
+### **Backend (Ballerina)**
+- **Language:** Ballerina 2201.8.0+
+- **Framework:** HTTP services with MongoDB integration
+- **Database:** MongoDB for flexible parcel and courier data storage
+- **Authentication:** JWT-based secure authentication
+- **Port:** 8080
+
+### **Frontend (Next.js)**
+- **Framework:** Next.js 14+ with App Router
+- **Styling:** Tailwind CSS for modern, responsive design
+- **Language:** TypeScript for type safety
+- **State Management:** React Context and custom hooks
+- **Port:** 3000
+
+### **Database (MongoDB)**
+- **Collections:** courier_services, parcels, users, status_updates
+- **Indexes:** Optimized for tracking queries and status lookups
+- **Features:** Flexible document storage for parcel data
+
+## 📁 **Project Structure**
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Next.js       │    │   Ballerina     │    │   MongoDB       │
-│   Frontend      │◄──►│   Backend       │◄──►│   Database      │
-│                 │    │                 │    │                 │
-│ • React UI      │    │ • REST APIs     │    │ • Document Store│
-│ • Interactive   │    │ • Location      │    │ • Geospatial    │
-│   Maps          │    │   Services      │    │   Queries       │
-│ • Real-time     │    │ • Notifications │    │ • Indexing      │
-│   Updates       │    │ • Validation    │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+TrackMe/
+├── 📁 backend/                 # Ballerina backend services
+│   ├── 📁 src/
+│   │   ├── 📁 models/         # Data type definitions
+│   │   ├── 📁 services/       # HTTP service implementations
+│   │   ├── 📁 utils/          # Helper functions
+│   │   └── 📁 config/         # Configuration files
+│   ├── 📁 tests/              # Test files
+│   └── Ballerina.toml         # Project configuration
+├── 📁 frontend/                # Next.js frontend application
+│   └── 📁 trackme/            # Next.js app directory
+├── 📁 docs/                    # Project documentation
+├── 📁 scripts/                 # Setup and utility scripts
+├── 📁 .github/                 # GitHub workflows and templates
+├── docker-compose.yml          # Multi-service Docker setup
+├── README.md                   # Project overview
+└── .gitignore                  # Git ignore rules
 ```
 
-## 🛠️ Tech Stack
+## 🚀 **Quick Start**
 
-### Backend
-- **Ballerina** - Cloud-native programming language
-- **MongoDB** - Document database with geospatial support
-- **Docker** - Containerization
+### **Prerequisites**
+- [Ballerina](https://ballerina.io/download/) 2201.8.0+
+- [Node.js](https://nodejs.org/) 18+
+- [Docker](https://www.docker.com/) 20.10+
+- [MongoDB](https://www.mongodb.com/) 7.0+
 
-### Frontend
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type-safe JavaScript
-- **Tailwind CSS** - Utility-first CSS framework
-- **Mapbox** - Interactive maps and location services
-
-### DevOps
-- **GitHub Actions** - CI/CD pipeline
-- **Docker Compose** - Multi-container orchestration
-
-## 📋 Prerequisites
-
-- **Node.js** 18+ and **npm**
-- **Ballerina** 2201.8.0+
-- **MongoDB** 7.0+ (local or Atlas)
-- **Docker** and **Docker Compose** (optional)
-
-## 🚀 Quick Start
-
-### 1. Clone the Repository
+### **1. Clone the Repository**
 ```bash
 git clone https://github.com/yourusername/trackme.git
 cd trackme
 ```
 
-### 2. Backend Setup
+### **2. Start MongoDB**
+```bash
+docker-compose up mongodb -d
+```
+
+### **3. Start Backend**
 ```bash
 cd backend
-bal build
 bal run
 ```
 
-### 3. Frontend Setup
+### **4. Start Frontend**
 ```bash
-cd frontend
+cd frontend/trackme
 npm install
 npm run dev
 ```
 
-### 4. Database Setup
-```bash
-# Using Docker
-docker-compose up -d mongodb
+### **5. Access the Application**
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:8080
+- **MongoDB:** localhost:27017
 
-# Or connect to MongoDB Atlas
-# Update connection string in backend/config/mongodb.toml
-```
+## 📚 **Documentation**
 
-### 5. Access the Application
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:9090
-- **API Documentation**: http://localhost:9090/docs
+- **[Project Specification](docs/PROJECT_SPECIFICATION.md)** - Detailed project requirements and architecture
+- **[Project Structure](docs/PROJECT_STRUCTURE.md)** - Complete project structure and development guide
+- **[Project Summary](docs/PROJECT_SUMMARY.md)** - High-level project overview and timeline
+- **[Implementation Guide](docs/IMPLEMENTATION_GUIDE.md)** - Step-by-step development instructions
 
-## 📁 Project Structure
+## 🔧 **Development**
 
-```
-TrackMe/
-├── backend/                    # Ballerina Backend
-│   ├── src/
-│   │   ├── services/          # Business logic
-│   │   ├── models/            # Data models
-│   │   └── utils/             # Utilities
-│   ├── tests/                 # Backend tests
-│   └── Ballerina.toml         # Ballerina config
-├── frontend/                   # Next.js Frontend
-│   ├── src/
-│   │   ├── app/               # App Router pages
-│   │   ├── components/        # React components
-│   │   └── lib/               # Utilities
-│   ├── public/                # Static assets
-│   └── package.json
-├── docker/                     # Docker configuration
-├── docs/                       # Documentation
-└── scripts/                    # Build/deploy scripts
-```
-
-## 🔧 Development
-
-### Backend Development
+### **Backend Development**
 ```bash
 cd backend
-bal build          # Build the project
-bal test           # Run tests
-bal run            # Run in development
+bal test          # Run tests
+bal build         # Build project
+bal run           # Run in development mode
 ```
 
-### Frontend Development
+### **Frontend Development**
 ```bash
-cd frontend
-npm run dev        # Development server
-npm run build      # Production build
-npm run test       # Run tests
+cd frontend/trackme
+npm run dev       # Start development server
+npm run build     # Build for production
+npm run test      # Run tests
+npm run lint      # Run linting
 ```
 
-### Database Operations
+### **Database Management**
 ```bash
-# Connect to MongoDB
-mongosh mongodb://localhost:27017/trackit
+# Access MongoDB shell
+docker exec -it trackme_mongodb mongosh -u admin -p password
 
 # View collections
+use trackme
 show collections
-
-# Query parcels
-db.parcels.find().pretty()
 ```
 
-## 📚 API Documentation
+## 🧪 **Testing**
 
-### Core Endpoints
+### **Backend Testing**
+- **Unit Tests:** Individual service and utility functions
+- **Integration Tests:** API endpoints and database operations
+- **Performance Tests:** Load testing for tracking queries
 
-#### Create Parcel
-```http
-POST /api/parcels
-Content-Type: application/json
+### **Frontend Testing**
+- **Component Tests:** Individual React components
+- **Integration Tests:** Page interactions and API calls
+- **E2E Tests:** Complete user workflows
 
-{
-  "sender": {
-    "name": "John Doe",
-    "phone": "+1234567890",
-    "email": "john@example.com"
-  },
-  "recipient": {
-    "name": "Jane Smith",
-    "phone": "+0987654321",
-    "email": "jane@example.com"
-  },
-  "item": {
-    "description": "Electronics package"
-  },
-  "locations": {
-    "pickup": {
-      "coordinates": [-74.0060, 40.7128],
-      "address": "123 Main St, NYC"
-    },
-    "delivery": {
-      "coordinates": [-73.9851, 40.7589],
-      "address": "456 Broadway, NYC"
-    }
-  }
-}
-```
+## 🐳 **Docker Deployment**
 
-#### Track Parcel
-```http
-GET /api/parcels/{id}
-```
-
-#### Update Location
-```http
-PUT /api/parcels/{id}/location
-Content-Type: application/json
-
-{
-  "coordinates": [-73.9900, 40.7300],
-  "status": "In Transit",
-  "timestamp": "2024-01-15T11:00:00Z"
-}
-```
-
-## 🐳 Docker Deployment
-
-### Development
+### **Development Environment**
 ```bash
+# Start all services
 docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
 ```
 
-### Production
+### **Production Deployment**
 ```bash
+# Build production images
+docker-compose -f docker-compose.prod.yml build
+
+# Deploy to production
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-## 🧪 Testing
+## 🔒 **Security Features**
 
-### Backend Tests
-```bash
-cd backend
-bal test
-```
+- **JWT Authentication:** Secure session management for admin users
+- **Password Hashing:** bcrypt with salt for user passwords
+- **Input Validation:** SQL injection and XSS protection
+- **Rate Limiting:** API abuse prevention
+- **HTTPS Only:** All communications encrypted
+- **Role-based Access:** Permission-based authorization
 
-### Frontend Tests
-```bash
-cd frontend
-npm test
-```
+## 📊 **Performance Targets**
 
-### End-to-End Tests
-```bash
-npm run test:e2e
-```
+- **API Response:** < 200ms for standard operations
+- **Tracking Queries:** < 100ms for status lookups
+- **Page Load:** < 2 seconds for initial page render
+- **Concurrent Users:** Support 500+ simultaneous users
+- **System Uptime:** 99.9% availability target
 
-## 📊 Monitoring
+## 🚧 **Development Timeline**
 
-- **Application Logs**: Check console output
-- **Database**: MongoDB Compass or mongosh
-- **API Health**: `GET /health`
-- **Metrics**: Prometheus endpoints available
+### **Week 1: Foundation & Backend** 🏗️
+- [x] Project setup and documentation
+- [ ] Ballerina backend structure
+- [ ] Core data models and MongoDB integration
+- [ ] Basic CRUD APIs and courier service management
 
-## 🤝 Contributing
+### **Week 2: Core Features & Frontend** 🚀
+- [ ] Parcel management and status tracking
+- [ ] Next.js frontend setup and admin dashboard
+- [ ] Customer tracking interface and WhatsApp integration
+
+### **Week 3: Polish & Deployment** ✨
+- [ ] Notification system and advanced features
+- [ ] Testing, bug fixes, and performance optimization
+- [ ] Docker deployment and documentation
+
+## 🤝 **Contributing**
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## 📝 **License**
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 📞 **Support**
 
-- **Ballerina** team for the amazing cloud-native language
-- **Next.js** team for the React framework
-- **MongoDB** for the document database
-- **Mapbox** for location services
+- **Documentation:** Check the [docs](docs/) folder for comprehensive guides
+- **Issues:** Report bugs and request features via [GitHub Issues](https://github.com/yourusername/trackme/issues)
+- **Discussions:** Join the conversation in [GitHub Discussions](https://github.com/yourusername/trackme/discussions)
 
-## 📞 Support
+## 🔮 **Future Enhancements**
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/trackme/issues)
-- **Documentation**: [Wiki](https://github.com/yourusername/trackme/wiki)
-- **Email**: support@trackme.com
+### **Phase 2 (Post-MVP)**
+- Multi-language support and internationalization
+- Advanced analytics and delivery performance metrics
+- Mobile applications for iOS and Android
+- Webhook system for real-time integrations
+
+### **Phase 3 (Enterprise)**
+- White-label solutions with customizable branding
+- Advanced reporting and business intelligence dashboards
+- Machine learning for predictive delivery times
+- Blockchain integration for immutable tracking records
 
 ---
 
-**Built with ❤️ using Ballerina and Next.js**
+## 🎯 **Ready to Build?**
+
+**TrackMe** is designed to revolutionize how courier services manage parcel tracking. With its modern architecture, WhatsApp integration, and customer-friendly interface, it provides a complete solution for the courier industry.
+
+**Ready to build the future of courier parcel tracking?** 🚀
+
+- **Start with the [Implementation Guide](docs/IMPLEMENTATION_GUIDE.md)**
+- **Review the [Project Specification](docs/PROJECT_SPECIFICATION.md)**
+- **Check the [Project Structure](docs/PROJECT_STRUCTURE.md)**
+
+---
+
+**Made with ❤️ by the TrackMe Team**
+
+*Let's make courier parcel tracking simple, transparent, and delightful! 📦✨*

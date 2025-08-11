@@ -2,16 +2,16 @@
 
 ## 🎯 Project Overview
 
-**TrackMe** is a **multi-tenant, business-focused** parcel tracking system designed to solve the fragmented parcel tracking problem. It provides dedicated business accounts where small businesses can manage their parcels efficiently, with a unified platform for tracking packages from multiple courier services, real-time location updates, and interactive maps.
+**TrackMe** is a **courier service-focused** parcel tracking system designed to help courier companies manage their parcel operations efficiently. It provides a centralized platform where multiple courier services can register, create parcels, update delivery status, and share tracking information with customers through WhatsApp links. Customers can track their parcels through simple public tracking pages without needing to create accounts.
 
 ### 🚀 **Key Features**
-- **Multi-Tenant Business Accounts:** Dedicated spaces for small businesses
-- **Unified Tracking:** Single interface for all parcel tracking within each business
-- **Real-time Location:** GPS-based tracking with interactive maps
-- **Smart Notifications:** Location-aware alerts and ETA predictions
-- **Business Dashboard:** Centralized parcel management for each business
-- **API-First Design:** Easy integration with existing business systems
-- **Cloud-Native:** Scalable architecture supporting multiple business accounts
+- **Courier Service Registration:** Multiple courier services can create accounts
+- **Parcel Management:** Create, edit, and track parcel status updates
+- **WhatsApp Integration:** Generate tracking links for WhatsApp sharing
+- **Customer Tracking Portal:** Simple interface for customers to track parcels
+- **Admin Dashboard:** Comprehensive management interface for courier services
+- **Real-time Updates:** Instant status updates and notifications
+- **Cloud-Native:** Scalable architecture supporting multiple courier services
 
 ---
 
@@ -20,20 +20,20 @@
 ### **Backend (Ballerina)**
 - **Language:** Ballerina 2201.8.0+
 - **Framework:** HTTP services with MongoDB integration
-- **Database:** MongoDB with geospatial indexing
+- **Database:** MongoDB for flexible parcel and courier data storage
 - **Port:** 8080
 
 ### **Frontend (Next.js)**
 - **Framework:** Next.js 14+ with App Router
 - **Styling:** Tailwind CSS
 - **Language:** TypeScript
-- **Maps:** Mapbox GL JS integration
+- **Responsive Design:** Mobile-first approach for customer tracking
 - **Port:** 3000
 
 ### **Database (MongoDB)**
-- **Collections:** parcels, users, notifications
-- **Indexes:** Geospatial indexes for location queries
-- **Features:** Native GeoJSON support
+- **Collections:** courier_services, parcels, users, status_updates
+- **Indexes:** Tracking number, courier service, and status indexes
+- **Features:** Flexible document storage for parcel data
 
 ---
 
@@ -69,18 +69,18 @@ TrackMe/
 ### **Week 1: Foundation & Backend** 🏗️
 - [x] **Project Setup:** Repository structure and documentation
 - [x] **Backend Structure:** Ballerina project initialization
-- [x] **Data Models:** Core parcel and user types
+- [x] **Data Models:** Core parcel and courier service types
 - [ ] **MongoDB Integration:** Database connection and setup
 - [ ] **Basic CRUD APIs:** Parcel management endpoints
 
 ### **Week 2: Core Features & Frontend** 🚀
-- [ ] **Location Tracking:** Geospatial queries and updates
+- [ ] **Parcel Management:** Create and update parcel status
 - [ ] **Frontend Setup:** Next.js project initialization
-- [ ] **Map Integration:** Mapbox GL JS implementation
-- [ ] **User Interface:** Basic tracking dashboard
+- [ ] **Admin Dashboard:** Courier service management interface
+- [ ] **Customer Tracking:** Public tracking pages
 
 ### **Week 3: Polish & Deployment** ✨
-- [ ] **Notification System:** Email and push notifications
+- [ ] **WhatsApp Integration:** Generate tracking links
 - [ ] **Testing & Optimization:** Performance and security
 - [ ] **Docker Deployment:** Containerized application
 - [ ] **Documentation:** User guides and API docs
@@ -104,47 +104,47 @@ TrackMe/
 
 ### 📋 **Next Steps**
 1. **Initialize Ballerina Backend Project**
-2. **Set up MongoDB with geospatial indexes**
+2. **Set up MongoDB with courier service and parcel collections**
 3. **Implement core tracking service**
 4. **Create Next.js frontend application**
-5. **Integrate Mapbox for location visualization**
+5. **Integrate WhatsApp tracking link generation**
 
 ---
 
 ## 🎨 User Experience Features
 
-### **Dashboard Interface**
-- **Parcel List:** Overview of all tracked packages
-- **Interactive Map:** Real-time location visualization
-- **Status Timeline:** Visual delivery progress
-- **Search & Filter:** Easy parcel discovery
+### **Admin Dashboard Interface**
+- **Parcel List:** Overview of all parcels and their statuses
+- **Status Management:** Easy interface to update parcel status
+- **Customer Communication:** Send notifications and updates
+- **Analytics:** Delivery performance and statistics
 
-### **Tracking Experience**
-- **Real-time Updates:** Live location and status changes
-- **Route Visualization:** Complete delivery journey
-- **ETA Calculation:** Dynamic delivery time estimates
-- **Notification Center:** Customizable alerts
+### **Customer Tracking Experience**
+- **Simple Interface:** Clean, mobile-responsive tracking page
+- **Status Timeline:** Visual delivery progress
+- **WhatsApp Integration:** Easy sharing of tracking information
+- **No Registration Required:** Track parcels without creating accounts
 
 ### **Mobile Responsiveness**
 - **Responsive Design:** Works on all device sizes
 - **Touch-Friendly:** Optimized for mobile interactions
-- **Offline Support:** Basic functionality without internet
+- **Fast Loading:** Quick access to tracking information
 
 ---
 
 ## 🔒 Security & Performance
 
 ### **Security Features**
-- **JWT Authentication:** Secure user sessions
+- **JWT Authentication:** Secure session management for admin users
 - **Password Hashing:** bcrypt with salt
 - **Input Validation:** SQL injection and XSS protection
 - **Rate Limiting:** API abuse prevention
 
 ### **Performance Targets**
 - **API Response:** < 200ms for standard operations
-- **Location Queries:** < 100ms for geospatial searches
+- **Tracking Queries:** < 100ms for status lookups
 - **Page Load:** < 2 seconds for initial render
-- **Concurrent Users:** Support 1000+ simultaneous users
+- **Concurrent Users:** Support 500+ simultaneous users
 
 ---
 
@@ -173,8 +173,8 @@ TrackMe/
 - **Test Coverage:** > 80% code coverage
 
 ### **Business KPIs**
-- **User Adoption:** 100+ active users in first month
-- **Tracking Accuracy:** 95%+ location accuracy
+- **Courier Service Adoption:** 50+ registered services in first month
+- **Tracking Accuracy:** 95%+ status accuracy
 - **User Satisfaction:** > 4.5/5 rating target
 - **Performance:** < 2s page load times
 
@@ -233,8 +233,8 @@ TrackMe/
 ### **Current Status:** 🟡 **Planning Complete - Ready to Start Development**
 
 The TrackMe project is fully planned and documented. We have:
-- ✅ **Clear Problem Statement:** Fragmented parcel tracking
-- ✅ **Defined Solution:** Unified cloud-native platform
+- ✅ **Clear Problem Statement:** Courier service parcel tracking needs
+- ✅ **Defined Solution:** Centralized tracking platform with WhatsApp integration
 - ✅ **Technical Architecture:** Ballerina + Next.js + MongoDB
 - ✅ **Development Timeline:** 3-week implementation plan
 - ✅ **Project Structure:** Organized folder hierarchy
@@ -242,13 +242,13 @@ The TrackMe project is fully planned and documented. We have:
 
 ### **Next Action:** 🚀 **Start Backend Development**
 
-**Ready to begin building the future of parcel tracking?** 
+**Ready to begin building the future of courier parcel tracking?** 
 
 1. **Initialize Ballerina backend project**
-2. **Set up MongoDB with geospatial indexes**
+2. **Set up MongoDB with courier service and parcel collections**
 3. **Implement core tracking service**
-4. **Build the foundation for real-time location tracking**
+4. **Build the foundation for WhatsApp integration**
 
 ---
 
-**Let's make parcel tracking simple, transparent, and delightful! 📦✨** 
+**Let's make courier parcel tracking simple, transparent, and delightful! 📦✨** 
