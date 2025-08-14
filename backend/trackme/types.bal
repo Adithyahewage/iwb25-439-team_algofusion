@@ -1,7 +1,7 @@
 public type User record {
-	string username;
-	string name;
-	string password;
+    string username;
+    string email;
+    string password;
 };
 
 public type RefreshTokenRequest record {
@@ -15,7 +15,7 @@ public type TokenResponse record {
 
 public type SignupRequest record {
     string username;
-    string name;
+    string email;
     string password;
 };
 
@@ -26,10 +26,9 @@ public type LoginRequest record {
 
 public type LoginResponse record {
     string username;
-    string name;
+    string email;
     boolean success;
 };
-
 
 public type ErrorResponse record {
     string message;
