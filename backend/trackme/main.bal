@@ -1,15 +1,16 @@
-import ballerina/io;
+import ballerina/crypto;
+import ballerina/http;
 
-public function main() returns error? {
-    io:println("🚀 Starting TrackMe Backend Service...");
-    io:println("✅ TrackMe Backend Service started successfully!");
-    io:println("🌐 API available at: http://localhost:8080");
-    io:println("📦 Courier Service API at: http://localhost:8080/api/v1/courier-services");
-    io:println("📝 Testing MongoDB integration...");
-    
-    // Simple test for now
-    io:println("🧪 Testing basic functionality...");
-    io:println("✅ Basic test completed!");
-    
-    return ();
+// JWT signing key - in production, this should be in a secure configuration
+configurable string JWT_SECRET = "VMo5+0yeh8WMemqrB/2IkmZ8HXHCkqeGC51j3eMoJZF7qBdfm4QXMGekX1yiRveZc49Cw+lTv1EdCSdGIJXx6A==";
+
+// Function to hash passwords using SHA-256
+function hashPassword(string password) returns string {
+    byte[] hashedBytes = crypto:hashSha256(password.toBytes());
+    return hashedBytes.toBase16();
+}
+
+listener http:Listener ln = new (8080);
+public function main() {
+
 }
