@@ -34,3 +34,16 @@ public type ErrorResponse record {
     string message;
     int statusCode;
 };
+
+
+//development only(create package)
+public type Package record {
+    string trackingId;
+    string sender;
+    string receiver;
+    string origin;
+    string destination;
+    string status; // e.g., "Pending", "In Transit", "Delivered"
+    string companyId; // link to courier company
+    string createdAt;
+};
