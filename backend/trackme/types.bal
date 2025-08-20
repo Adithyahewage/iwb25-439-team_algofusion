@@ -1,7 +1,17 @@
-public type User record {
-    string username;
+// import ballerina/time;
+
+public type CourierService record {
+    // id is omitted since MongoDB auto-generates it
+    string name;
     string email;
     string password;
+    string phone;
+    string address;
+    string logo;
+    string createdAt;
+    string updatedAt;
+    boolean verified;
+    string verificationToken;
 };
 
 public type RefreshTokenRequest record {
@@ -14,18 +24,17 @@ public type TokenResponse record {
 };
 
 public type SignupRequest record {
-    string username;
+    string name;
     string email;
     string password;
 };
 
 public type LoginRequest record {
-    string username;
+    string email;
     string password;
 };
 
 public type LoginResponse record {
-    string username;
     string email;
     boolean success;
 };

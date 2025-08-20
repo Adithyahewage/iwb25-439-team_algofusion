@@ -1,13 +1,42 @@
+import ballerina/email;
 import ballerina/http;
 import ballerina/jwt;
 import ballerina/log;
 import ballerina/time;
 
-// Helper method to generate JWT token with fixed customClaims
-public function generateJwtToken(User user) returns string|error {
-    // Create a proper map for custom claims
+// SMTP configuration (replace with your SMTP server details)
+const string SMTP_HOST = "smtp.gmail.com";
+const int SMTP_PORT = 587;
+const string SMTP_USERNAME = "adithyahewage69@gmail.com";
+const string SMTP_PASSWORD = "tfpmdekekeizwoir";
+const string FROM_EMAIL = "adithyahewage69@gmail.com";
+
+// Helper to send verification email
+public function sendVerificationEmail(string toEmail, string verificationToken) returns error? {
+    string verificationUrl = "http://localhost:8081/api/auth/verify?token=" + verificationToken;
+    string subject = "Verify your TrackMe account";
+    string htmlBody = "<p>Thank you for registering with TrackMe!</p>" +
+        "<p>Please verify your email by clicking the link below:</p>" +
+        "<a href='" + verificationUrl + "'>Verify Email</a>";
+    email:SmtpConfiguration smtpConfig = {
+        port: SMTP_PORT
+    };
+    email:SmtpClient smtpClient = check new (SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD, smtpConfig);
+    email:Message msg = {
+        to: [toEmail],
+        subject: subject,
+        htmlBody: htmlBody
+    };
+    check smtpClient->sendMessage(msg);
+    // No close() method in this version
+}
+
+// No import needed for types in the same module
+
+// Helper method to generate JWT token for CourierService
+public function generateJwtToken(CourierService courier) returns string|error {
     jwt:IssuerConfig issuerConfig = {
-        username: user.username, // This sets the 'sub' field
+        username: courier.email, // Use email as subject (unique)
         issuer: "automeet",
         audience: ["automeet-app"],
         expTime: <decimal>time:utcNow()[0] + 36000, // Token valid for 1 hour
@@ -16,8 +45,11 @@ public function generateJwtToken(User user) returns string|error {
             config: JWT_SECRET
         },
         customClaims: {
-            "username": user.username, // Add this explicitly for custom access
-            "email": user.email
+            "name": courier.name,
+            "email": courier.email,
+            "phone": courier.phone,
+            "address": courier.address,
+            "logo": courier.logo
         }
     };
 
@@ -31,9 +63,8 @@ public function generateJwtToken(User user) returns string|error {
     return token;
 }
 
-// Helper function to extract JWT token from cookie
-public function validateAndGetUsernameFromCookie(http:Request request) returns string?|error {
-    // Try to get the auth_token cookie
+// Helper function to extract JWT token from cookie and get email (subject)
+public function validateAndGetEmailFromCookie(http:Request request) returns string?|error {
     http:Cookie[] cookies = request.getCookies();
     string? token = ();
 
@@ -47,7 +78,6 @@ public function validateAndGetUsernameFromCookie(http:Request request) returns s
     // If no auth cookie found, check for Authorization header as fallback
     if token is () {
         string authHeader = check request.getHeader("Authorization");
-
         if authHeader.startsWith("Bearer ") {
             token = authHeader.substring(7);
         } else {
@@ -56,45 +86,36 @@ public function validateAndGetUsernameFromCookie(http:Request request) returns s
         }
     }
 
-    // Validate the JWT token - Using updated structure for JWT 2.13.0
     jwt:ValidatorConfig validatorConfig = {
         issuer: "automeet",
         audience: "automeet-app",
         clockSkew: 60,
         signatureConfig: {
-            secret: JWT_SECRET // For HMAC based JWT
+            secret: JWT_SECRET
         }
     };
 
     jwt:Payload|error validationResult = jwt:validate(token, validatorConfig);
-
     if (validationResult is error) {
         log:printError("JWT validation failed", validationResult);
         return ();
     }
-
     jwt:Payload payload = validationResult;
 
-    // First check if the username might be in the subject field
+    // Use email as subject
     if (payload.sub is string) {
         return payload.sub;
     }
 
-    // Direct access to claim using index accessor
+    // Try to access email from custom claims
     var customClaims = payload["customClaims"];
     if (customClaims is map<json>) {
-        var username = customClaims["username"];
-        if (username is string) {
-            return username;
+        var email = customClaims["email"];
+        if (email is string) {
+            return email;
         }
     }
 
-    // Try to access username directly as a rest field
-    var username = payload["username"];
-    if (username is string) {
-        return username;
-    }
-
-    log:printError("Username not found in JWT token");
+    log:printError("Email not found in JWT token");
     return ();
 }
