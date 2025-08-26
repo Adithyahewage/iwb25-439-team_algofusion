@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -47,6 +48,7 @@ export default function Dashboard() {
       <h1 className="text-2xl font-bold mb-6">
         {username ? `Welcome, ${username}! 🎉` : "Loading..."}
       </h1>
+      <Link href="/dashboard/create-package" className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 flex flex-col items-center justify-center">Create Package</Link>
       <button
         onClick={handleLogout}
         className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"

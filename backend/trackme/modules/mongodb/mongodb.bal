@@ -15,9 +15,11 @@ public type UpdateResult mongodb:UpdateResult;
 public type Database mongodb:Database;
 public type Collection mongodb:Collection;
 public type FindOptions mongodb:FindOptions;
+public type DeleteResult mongodb:DeleteResult;
 
 // Collection references - initialized through functions to avoid the check keyword at module level
 public mongodb:Collection userCollection = getCollectionRef("courier_service");
+public mongodb:Collection packageCollection = getCollectionRef("packages"); // ✅ added for package service
 
 // Initialize MongoDB client - handles the error internally
 function initMongoDbClient() returns mongodb:Client {
