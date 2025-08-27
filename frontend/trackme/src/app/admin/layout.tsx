@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { authApi } from '@/lib/api/auth';
 import { User } from '@/lib/types/courier';
 import AdminSidebar from '@/components/admin/AdminSidebar';
@@ -11,8 +11,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
+    // Allow the login page to render without auth guard
+    if (pathname === '/admin/login') {
+      setLoading(false);
+      return;
+    }
+
     const checkAuth = async () => {
       try {
         // Check if user is authenticated
@@ -40,7 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     };
 
     checkAuth();
-  }, [router]);
+  }, [router, pathname]);
 
   const handleLogout = async () => {
     try {
@@ -64,6 +71,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </div>
     );
+  }
+
+  // On login page, render children directly
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
   }
 
   if (!user) {
