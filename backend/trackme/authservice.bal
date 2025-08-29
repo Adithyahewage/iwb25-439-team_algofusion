@@ -27,12 +27,17 @@ service /api/auth on ln {
         // Extract all possible fields from the frontend payload
         string username = check signupPayload.username.ensureType();
         string password = check signupPayload.password.ensureType();
+        string confirmPassword = check signupPayload.confirmPassword.ensureType();
+        
 
         // Handle the email field - we'll look for it in the payload, but it might be missing
         string email = "";
         if (signupPayload.email is string) {
             email = check signupPayload.email.ensureType();
         }
+        string phone = check signupPayload.phone.ensureType();
+        string address = check signupPayload.address.ensureType();
+        
 
         // Validate required fields
         if (username == "" || password == "") {
@@ -42,6 +47,11 @@ service /api/auth on ln {
             badRequestResponse.setJsonPayload({"error": "Username and password are required fields"});
             check caller->respond(badRequestResponse);
             return;
+        }
+
+        if(password != confirmPassword){
+            log:printError("passwords not same");
+            return ;
         }
 
         // If email is not provided, use username as email
@@ -65,12 +75,16 @@ service /api/auth on ln {
 
         // Hash the password before storing
         string hashedPassword = hashPassword(password);
+        string hashedPassword2 = hashPassword(confirmPassword);
 
         // Create a new User record with the extracted fields
         User newUser = {
             username: username,
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            confirmPassword: hashedPassword2,
+            phone: phone,
+            address: address
         };
 
         check mongodb:userCollection->insertOne(newUser);

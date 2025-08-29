@@ -7,29 +7,77 @@ import Footer from "../../components/Footer";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    companyName: "",
+    companyName: "", // will be mapped to backend "username"
     email: "",
     password: "",
     confirmPassword: "",
     phone: "",
     address: "",
-    agreeToTerms: false
+    agreeToTerms: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle registration logic here
-    console.log("Registration data:", formData);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+    const checked =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
-    
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch("http://localhost:8080/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.companyName, // backend expects "username"
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          phone: formData.phone,
+          address: formData.address,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Signup failed");
+      }
+
+      const data = await response.json();
+      setSuccess("Account created successfully! You can now login.");
+      console.log("Signup success:", data);
+
+      // optionally redirect to login
+      // router.push("/login");
+    } catch (err: any) {
+      setError(err.message);
+      console.error("Signup error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,17 +85,24 @@ export default function RegisterPage() {
       <Navbar />
       <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-slate-900 mb-4">Register Your Courier Service</h1>
+          <h1 className="text-4xl font-bold text-slate-900 mb-4">
+            Register Your Courier Service
+          </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Create your account and start managing your courier business with our comprehensive tracking platform.
+            Create your account and start managing your courier business with
+            our comprehensive tracking platform.
           </p>
         </div>
 
         <div className="bg-white rounded-3xl border border-slate-200/60 p-8 sm:p-12 shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Form fields (unchanged) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="companyName" className="block text-sm font-semibold text-slate-700 mb-2">
+                <label
+                  htmlFor="companyName"
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Company Name *
                 </label>
                 <input
@@ -63,7 +118,10 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Email Address *
                 </label>
                 <input
@@ -79,7 +137,10 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Password *
                 </label>
                 <input
@@ -95,7 +156,10 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-slate-700 mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Confirm Password *
                 </label>
                 <input
@@ -111,7 +175,10 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-semibold text-slate-700 mb-2">
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Phone Number
                 </label>
                 <input
@@ -126,7 +193,10 @@ export default function RegisterPage() {
               </div>
 
               <div className="md:col-span-2">
-                <label htmlFor="address" className="block text-sm font-semibold text-slate-700 mb-2">
+                <label
+                  htmlFor="address"
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Business Address
                 </label>
                 <textarea
@@ -141,6 +211,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Terms */}
             <div className="flex items-start gap-3">
               <input
                 type="checkbox"
@@ -151,56 +222,58 @@ export default function RegisterPage() {
                 required
                 className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
               />
-              <label htmlFor="agreeToTerms" className="text-sm text-slate-600">
+              <label
+                htmlFor="agreeToTerms"
+                className="text-sm text-slate-600"
+              >
                 I agree to the{" "}
-                <Link href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
+                <Link
+                  href="/terms"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
+                <Link
+                  href="/privacy"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
                   Privacy Policy
                 </Link>
               </label>
             </div>
 
+            {/* Error / Success Messages */}
+            {error && (
+              <p className="text-red-600 font-medium text-sm">{error}</p>
+            )}
+            {success && (
+              <p className="text-green-600 font-medium text-sm">{success}</p>
+            )}
+
+            {/* Submit */}
             <div className="pt-6">
               <button
                 type="submit"
-                className="w-full inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-4 text-base font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                disabled={loading}
+                className="w-full inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-4 text-base font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create Account
+                {loading ? "Creating Account..." : "Create Account"}
               </button>
             </div>
 
             <div className="text-center pt-4">
               <p className="text-sm text-slate-600">
                 Already have an account?{" "}
-                <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+                <Link
+                  href="/admin/login"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
                   Sign in here
                 </Link>
               </p>
             </div>
           </form>
-        </div>
-
-        <div className="mt-12 text-center">
-          <div className="bg-slate-50 rounded-2xl p-8 max-w-2xl mx-auto">
-            <h3 className="text-lg font-semibold text-slate-900 mb-3">Why register with TrackMe?</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-slate-600">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold">✓</span>
-                Free setup
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-sky-50 text-sky-600 text-xs font-bold">24/7</span>
-                Support
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold">99.9%</span>
-                Uptime
-              </div>
-            </div>
-          </div>
         </div>
       </main>
       <Footer />

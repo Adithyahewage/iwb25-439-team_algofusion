@@ -17,15 +17,31 @@ export default function CreatePackage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const generateTrackingId = () => {
+    // Example: PKG + random 3-digit number
+    return "PKG" + Math.floor(100 + Math.random() * 900);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const packageData = {
+      trackingId: generateTrackingId(),
+      sender: form.sender,
+      receiver: form.receiver,
+      origin: form.origin,
+      destination: form.destination,
+      status: "In Transit", // default
+      companyId: "C001", // you can make this dynamic later
+      createdAt: new Date().toISOString().split("T")[0], // e.g. "2025-08-26"
+    };
+
     try {
-      const res = await fetch("http://localhost:8080/api/packages", {
+      const res = await fetch("http://localhost:8080/api/packages/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // ✅ send JWT cookie
-        body: JSON.stringify(form),
+        body: JSON.stringify(packageData),
       });
 
       if (res.ok) {

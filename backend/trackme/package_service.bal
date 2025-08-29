@@ -94,32 +94,34 @@ service /api/packages on ln {
     }
 
     // Update package
-//    resource function put [string trackingId](http:Caller caller, http:Request req) returns error? {
-//     json payload = check req.getJsonPayload();
-//     Package updatedPackage = check payload.cloneWithType(Package);
+    resource function put [string trackingId](http:Caller caller, http:Request req) returns error? {
+        json payload = check req.getJsonPayload();
+        Package updatedPackage = check payload.cloneWithType(Package);
 
-//     map<json> filter = {"trackingId": trackingId};
+        // Filter by trackingId
+        map<json> filter = {"trackingId": trackingId};
 
-//     // ✅ Convert Package record to json for MongoDB update
-//     json updatedJson = check updatedPackage.cloneWithType(json);
+        // Convert the record into json
+        json updatedJson = check updatedPackage.cloneWithType(json);
 
-//     mongodb:Update updateOp = {"$set": updatedJson};
+        // Build proper MongoDB update operation
+        //json updateOp = {"$set": updatedJson};
 
-//     mongodb:UpdateResult result = check mongodb:packageCollection->updateOne(filter, updateOp);
+        // Perform update
+        mongodb:UpdateResult result = check mongodb:packageCollection->updateOne(filter,update = {set: {updatedJson}});
 
-//     if result.matchedCount == 0 {
-//         http:Response notFound = new;
-//         notFound.statusCode = 404;
-//         notFound.setJsonPayload({"error": "Package not found"});
-//         check caller->respond(notFound);
-//         return;
-//     }
+        if result.matchedCount == 0 {
+            http:Response notFound = new;
+            notFound.statusCode = 404;
+            notFound.setJsonPayload({"error": "Package not found"});
+            check caller->respond(notFound);
+            return;
+        }
 
-//     http:Response response = new;
-//     response.setJsonPayload({"message": "Package updated successfully"});
-//     check caller->respond(response);
-// }
-
+        http:Response response = new;
+        response.setJsonPayload({"message": "Package updated successfully"});
+        check caller->respond(response);
+    }
 
     // Delete package
     resource function delete [string trackingId](http:Caller caller) returns error? {

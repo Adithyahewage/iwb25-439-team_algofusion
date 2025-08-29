@@ -2,6 +2,13 @@ public type User record {
     string username;
     string email;
     string password;
+    string confirmPassword;
+    string phone;
+    string address;
+    // boolean agreeToTerms;
+    // // tokens
+    // string? email_refresh_token?;
+    // string? refresh_token?;
 };
 
 public type RefreshTokenRequest record {
