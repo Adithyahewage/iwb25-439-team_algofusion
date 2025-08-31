@@ -51,6 +51,6 @@ public type Package record {
     string origin;
     string destination;
     string status; // e.g., "Pending", "In Transit", "Delivered"
-    string companyId; // link to courier company
+    string username; // link to courier company
     string createdAt;
 };

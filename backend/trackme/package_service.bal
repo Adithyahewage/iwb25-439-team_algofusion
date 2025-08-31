@@ -52,23 +52,54 @@ service /api/packages on ln {
     }
 
     // Get all packages
+    // resource function get list(http:Caller caller) returns error? {
+    //     stream<Package, error?> pkgStream = check mongodb:packageCollection->find();
+    //     Package[] packages = [];
+
+    //     record {|Package value;|}? pkgRec = check pkgStream.next();
+    //     while pkgRec is record {|Package value;|} {
+    //         packages.push(pkgRec.value);
+    //         pkgRec = check pkgStream.next();
+    //     }
+
+    //     json packagesJson = check packages.cloneWithType(json);
+
+    //     http:Response response = new;
+    //     response.setJsonPayload(packagesJson);
+    //     check caller->respond(response);
+
+    // }
+
     resource function get list(http:Caller caller) returns error? {
-        stream<Package, error?> pkgStream = check mongodb:packageCollection->find();
-        Package[] packages = [];
+    stream<Package, error?> pkgStream = check mongodb:packageCollection->find();
+    Package[] packages = [];
 
-        record {|Package value;|}? pkgRec = check pkgStream.next();
-        while pkgRec is record {|Package value;|} {
-            packages.push(pkgRec.value);
-            pkgRec = check pkgStream.next();
-        }
-
-        json packagesJson = check packages.cloneWithType(json);
-
-        http:Response response = new;
-        response.setJsonPayload(packagesJson);
-        check caller->respond(response);
-
+    record {|Package value;|}? pkgRec = check pkgStream.next();
+    while pkgRec is record {|Package value;|} {
+        packages.push(pkgRec.value);
+        pkgRec = check pkgStream.next();
     }
+
+    // Convert each Package to JSON manually
+    json[] packagesJson = [];
+    foreach var p in packages {
+        packagesJson.push({
+            trackingId: p.trackingId,
+            sender: p.sender,        // must be string
+            receiver: p.receiver,    // must be string
+            origin: p.origin,
+            destination: p.destination,
+            status: p.status,
+            username: p.username, // renamed from companyId
+            createdAt: p.createdAt
+        });
+    }
+
+    http:Response response = new;
+    response.setJsonPayload(packagesJson);
+    check caller->respond(response);
+}
+
 
     // Get single package by trackingId
     resource function get [string trackingId](http:Caller caller) returns error? {

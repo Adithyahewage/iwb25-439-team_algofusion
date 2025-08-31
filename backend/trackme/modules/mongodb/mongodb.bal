@@ -2,8 +2,8 @@ import ballerinax/mongodb;
 import ballerina/log;
 
 // MongoDB client configuration
- public configurable string mongoDbUrl = "mongodb+srv://chamod:1234@cluster0.da9rgkc.mongodb.net/TrackMeDB?retryWrites=true&w=majority&appName=Cluster0";
-//public configurable string mongoDbUrl = "mongodb://127.0.0.1:27017/trackmedb";
+// public configurable string mongoDbUrl = "mongodb+srv://chamod:1234@cluster0.da9rgkc.mongodb.net/TrackMeDB?retryWrites=true&w=majority&appName=Cluster0";
+public configurable string mongoDbUrl = "mongodb://127.0.0.1:27017/trackmedb";
 
 public configurable string dbName = "TrackMe";
 
