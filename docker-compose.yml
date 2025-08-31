@@ -6,76 +6,56 @@ services:
     image: mongo:7.0
     container_name: trackme-mongodb
     restart: unless-stopped
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: trackme
+    ports:
+      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
       - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - trackme-network
 
-  # Ballerina Backend
+  # TrackMe Backend Service
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     container_name: trackme-backend
     restart: unless-stopped
     ports:
-      - "9090:9090"
+      - "8080:8080"
     environment:
-      MONGODB_URI: mongodb://admin:password@mongodb:27017/trackme?authSource=admin
-      LOG_LEVEL: INFO
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017
+      - MONGODB_DATABASE=trackme
+      - MONGODB_USERNAME=admin
+      - MONGODB_PASSWORD=password
+      - APP_ENV=development
     depends_on:
       - mongodb
     networks:
       - trackme-network
     volumes:
-      - ./backend/logs:/app/logs
+      - ./backend:/app
+      - /app/target
 
-  # Next.js Frontend
+  # TrackMe Frontend Service
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend/trackme
     container_name: trackme-frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:9090
-      NEXT_PUBLIC_MAPBOX_TOKEN: ${MAPBOX_TOKEN:-your_mapbox_token_here}
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
     depends_on:
       - backend
     networks:
       - trackme-network
 
-  # MongoDB Express (Optional - for database management)
-  mongo-express:
-    image: mongo-express:latest
-    container_name: trackme-mongo-express
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: password
-      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017/
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: password
-    depends_on:
-      - mongodb
-    networks:
-      - trackme-network
-
 volumes:
   mongodb_data:
-    driver: local
 
-  networks:
-    trackme-network:
+networks:
+  trackme-network:
     driver: bridge 
