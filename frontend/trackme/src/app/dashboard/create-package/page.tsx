@@ -9,7 +9,8 @@ export default function CreatePackage() {
     receiver: "",
     origin: "",
     destination: "",
-  });
+    username:""
+    });
   const [message, setMessage] = useState("");
   const router = useRouter();
 
@@ -32,7 +33,7 @@ export default function CreatePackage() {
       origin: form.origin,
       destination: form.destination,
       status: "In Transit", // default
-      companyId: "C001", // you can make this dynamic later
+      username: form.username, // you can make this dynamic later
       createdAt: new Date().toISOString().split("T")[0], // e.g. "2025-08-26"
     };
 
@@ -46,7 +47,7 @@ export default function CreatePackage() {
 
       if (res.ok) {
         setMessage("✅ Package created successfully!");
-        setForm({ sender: "", receiver: "", origin: "", destination: "" });
+        setForm({ sender: "", receiver: "", origin: "", destination: "" , username:""});
         setTimeout(() => router.push("/dashboard"), 1500);
       } else {
         const err = await res.json();
@@ -97,6 +98,15 @@ export default function CreatePackage() {
           name="destination"
           placeholder="Destination"
           value={form.destination}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded"
+        />
+        <input
+          type="text"
+          name="username"
+          placeholder="username"
+          value={form.username}
           onChange={handleChange}
           required
           className="border p-2 rounded"

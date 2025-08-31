@@ -1,17 +1,29 @@
+// export interface Parcel {
+//   id: string;
+//   trackingNumber: string;
+//   courierServiceId: string;
+//   sender: Sender;
+//   recipient: Recipient;
+//   item: Item;
+//   status: ParcelStatus;
+//   statusHistory: StatusUpdate[];
+//   locationHistory: LocationPoint[];
+//   estimatedDelivery: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
+
 export interface Parcel {
-  id: string;
-  trackingNumber: string;
-  courierServiceId: string;
-  sender: Sender;
-  recipient: Recipient;
-  item: Item;
-  status: ParcelStatus;
-  statusHistory: StatusUpdate[];
-  locationHistory: LocationPoint[];
-  estimatedDelivery: string;
+  trackingId: string;
+  sender: string;
+  receiver: string;
+  origin: string;
+  destination: string;
+  status: string;       // e.g., "Pending", "In Transit", "Delivered"
+  username: string;     // link to courier company
   createdAt: string;
-  updatedAt: string;
 }
+
 
 export interface Sender {
   name: string;
